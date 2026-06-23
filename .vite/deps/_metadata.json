@@ -1,0 +1,55 @@
+{
+  "hash": "0c6b5bd8",
+  "configHash": "f34ec11c",
+  "lockfileHash": "d385af2c",
+  "browserHash": "7c4761b5",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "9591a018",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "3bacdaff",
+      "needsInterop": true
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "226ab335",
+      "needsInterop": false
+    },
+    "victory": {
+      "src": "../../node_modules/victory/es/index.js",
+      "file": "victory.js",
+      "fileHash": "b6016fbd",
+      "needsInterop": false
+    },
+    "d3": {
+      "src": "../../node_modules/d3/index.js",
+      "file": "d3.js",
+      "fileHash": "ddc7c400",
+      "needsInterop": true
+    },
+    "venn.js/build/venn.js": {
+      "src": "../../node_modules/venn.js/build/venn.js",
+      "file": "venn__js_build_venn__js.js",
+      "fileHash": "25472daa",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-65KY755N": {
+      "file": "chunk-65KY755N.js"
+    },
+    "chunk-PZ3YZHGJ": {
+      "file": "chunk-PZ3YZHGJ.js"
+    },
+    "chunk-V4OQ3NZ2": {
+      "file": "chunk-V4OQ3NZ2.js"
+    }
+  }
+}
