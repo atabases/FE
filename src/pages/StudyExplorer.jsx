@@ -13,8 +13,20 @@ const studies = {
     {
       id: 'paac_jhu_2014',
       name: 'Pancreatic Adenocarcinoma (JHU, 2014)',
+      reference: 'Jiao et al. J Pathol 2014',
       samples: 24,
-      dataTypes: ['Clinical', 'Mutations']
+      all: 24,
+      mutations: 24,
+      cna: 0,
+      rnaseq: 0,
+      sv: 0,
+      mrna: 0,
+      mirna: 0,
+      meth: 0,
+      rppa: 0,
+      protein: 0,
+      complete: 0,
+      treatment: 0
     }
   ]
 };
@@ -49,6 +61,8 @@ export const StudyExplorer = ({ onStudySelect }) => {
   const filteredStudies = currentStudies.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const activeColumns = columns.filter(c => c.checked);
 
   return (
     <div className="flex-grow flex p-6 max-w-[1600px] mx-auto w-full gap-6">
@@ -144,50 +158,62 @@ export const StudyExplorer = ({ onStudySelect }) => {
                 </div>
               </div>
 
-              <div className="overflow-y-auto flex-grow p-5 space-y-3">
-                {filteredStudies.map((study) => (
-                  <div 
-                    key={study.id} 
-                    className="group bg-white border border-slate-200 rounded-lg p-4 hover:border-brand-300 hover:shadow-md transition-all duration-300 flex items-center cursor-pointer"
-                    onClick={() => onStudySelect(study)}
-                  >
-                    <div className="flex-grow pr-4">
-                      <h3 className="text-sm font-semibold text-slate-800 group-hover:text-brand-700 transition-colors">
-                        {study.name}
-                      </h3>
-                      <div className="flex items-center mt-2 space-x-3">
-                        <span className="text-xs text-slate-500 flex items-center">
-                          <Database className="w-3.5 h-3.5 mr-1 text-brand-500" />
-                          {study.samples.toLocaleString()} samples
-                        </span>
-                        <div className="flex space-x-1">
-                          {study.dataTypes?.map(dt => (
-                            <Badge key={dt} variant="default" className="text-[9px] px-1.5">{dt}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex space-x-2 transition-opacity duration-200">
-                      <button 
-                        className="p-2.5 bg-brand-50 hover:bg-brand-100 rounded-lg text-brand-700 transition-all flex items-center shadow-sm border border-brand-100/50"
-                        title="Analyze Study"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onStudySelect(study);
-                        }}
+              <div className="overflow-y-auto flex-grow bg-white">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                  <thead className="bg-slate-100/80 text-slate-700 sticky top-0 border-b border-slate-200 z-10 shadow-sm">
+                    <tr>
+                      {activeColumns.map((col) => (
+                        <th key={col.id} className="px-4 py-3 font-semibold text-xs uppercase tracking-wide">
+                          {col.name}
+                        </th>
+                      ))}
+                      <th className="px-4 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStudies.map((study) => (
+                      <tr 
+                        key={study.id} 
+                        className="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group"
+                        onClick={() => onStudySelect(study)}
                       >
-                        <BarChart3 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                {filteredStudies.length === 0 && (
-                  <div className="text-center py-12 text-slate-500">
-                    <Search className="w-8 h-8 mx-auto mb-3 text-slate-300" />
-                    <p>No studies found matching "{searchQuery}"</p>
-                  </div>
-                )}
+                        {activeColumns.map((col) => (
+                          <td key={col.id} className="px-4 py-3">
+                            {col.id === 'name' ? (
+                              <span className="text-brand-600 font-medium group-hover:underline">{study[col.id]}</span>
+                            ) : col.id === 'reference' ? (
+                              <span className="text-slate-600 flex items-center">
+                                <span className="text-brand-500 mr-1 text-lg leading-none">↓</span> {study[col.id]}
+                              </span>
+                            ) : (
+                              <span className="text-slate-600 tabular-nums">{study[col.id]}</span>
+                            )}
+                          </td>
+                        ))}
+                        <td className="px-4 py-3 text-right">
+                          <button 
+                            className="p-1.5 bg-brand-50 hover:bg-brand-100 rounded text-brand-700 transition-all shadow-sm border border-brand-100/50"
+                            title="Analyze Study"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onStudySelect(study);
+                            }}
+                          >
+                            <BarChart3 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredStudies.length === 0 && (
+                      <tr>
+                        <td colSpan={activeColumns.length + 1} className="text-center py-12 text-slate-500">
+                          <Search className="w-8 h-8 mx-auto mb-3 text-slate-300" />
+                          <p>No studies found matching "{searchQuery}"</p>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
