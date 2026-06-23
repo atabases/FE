@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Download, Share2, Settings, Filter, Search, BarChart2, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Download, Share2, Settings, Filter, Search, BarChart2, ChevronRight, Database } from 'lucide-react';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { BarChart } from '../components/charts/BarChart.jsx';
@@ -92,6 +92,10 @@ export const PatientDashboard = ({ study, onBack }) => {
           <div className="text-sm font-semibold text-slate-700 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
             Selected: <span className="text-brand-600">{data.summary.patients}</span> patients | <span className="text-brand-600">{data.summary.samples}</span> samples
           </div>
+          <button className="flex items-center px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-all text-sm font-semibold shadow-sm text-slate-700">
+            <Database className="w-4 h-4 mr-2" />
+            Clinical Data
+          </button>
           <div className="relative">
             <button 
               onClick={() => setShowChartsDropdown(!showChartsDropdown)}
