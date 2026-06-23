@@ -243,6 +243,10 @@ export const StudyExplorer = ({ onStudySelect }) => {
     setColumns(prev => prev.map(col => col.id === id ? { ...col, checked: !col.checked } : col));
   };
 
+  const handleSelectAll = (select) => {
+    setColumns(prev => prev.map(col => ({ ...col, checked: select })));
+  };
+
   const currentStudies = studies[selectedCategory] || studies.Pancreas;
   const filteredStudies = currentStudies.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -340,6 +344,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
                     <ColumnsDropdown 
                       columns={columns} 
                       onToggle={toggleColumn} 
+                      onSelectAll={handleSelectAll}
                       onClose={() => setShowColumnsDropdown(false)} 
                     />
                   )}
