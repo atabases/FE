@@ -4,7 +4,7 @@ import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { ChartsDropdown } from '../components/ui/ChartsDropdown.jsx';
 import { VictoryBarChart } from '../components/charts/VictoryBarChart.jsx';
-import { VennDiagramChart } from '../components/charts/VennDiagramChart.jsx';
+import { PieChart } from '../components/charts/PieChart.jsx';
 
 export const PatientDashboard = ({ study, onBack }) => {
   const [showChartsDropdown, setShowChartsDropdown] = useState(false);
@@ -178,10 +178,10 @@ export const PatientDashboard = ({ study, onBack }) => {
           </div>
         </Card>
 
-        {/* Study Overlap (Venn Diagram) */}
+        {/* Samples Per Patient (Pie Chart) */}
         {isVisible('Samples Per Patient') && (
-          <Card title="Study Overlap" className="col-span-12 md:col-span-4 h-80 flex flex-col items-center justify-center relative">
-            <VennDiagramChart />
+          <Card title="Samples Per Patient" className="col-span-12 md:col-span-4 h-80 flex flex-col items-center justify-center relative">
+            <PieChart />
           </Card>
         )}
 
