@@ -6,7 +6,9 @@ import { BarChart } from '../components/charts/BarChart.jsx';
 import { PieChart } from '../components/charts/PieChart.jsx';
 import { DashboardTable } from '../components/charts/DashboardTable.jsx';
 import { ChartsDropdown } from '../components/ui/ChartsDropdown.jsx';
+import { ClinicalDataTable } from '../components/charts/ClinicalDataTable.jsx';
 import { useDashboardData } from '../hooks/useDashboardData.js';
+import { useClinicalData } from '../hooks/useClinicalData.js';
 
 // Helper to bin raw numeric arrays
 function binData(rawData, bins, underLabel, overLabel) {
@@ -32,6 +34,9 @@ function binData(rawData, bins, underLabel, overLabel) {
 
 export const PatientDashboard = ({ study, onBack }) => {
   const { data, loading, error } = useDashboardData(study?.id);
+  const { data: clinicalData, loading: clinicalLoading, error: clinicalError } = useClinicalData(study?.id);
+  
+  const [viewMode, setViewMode] = useState('charts'); // 'charts' | 'clinical-data'
   const [showChartsDropdown, setShowChartsDropdown] = useState(false);
   const [selectedCharts, setSelectedCharts] = useState([
     { id: 'data-types', name: 'Data Types', freq: '100.0%', checked: true },
@@ -92,17 +97,29 @@ export const PatientDashboard = ({ study, onBack }) => {
           <div className="text-sm font-semibold text-slate-700 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
             Selected: <span className="text-brand-600">{data.summary.patients}</span> patients | <span className="text-brand-600">{data.summary.samples}</span> samples
           </div>
-          <button className="flex items-center px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-all text-sm font-semibold shadow-sm text-slate-700">
+          <button 
+            onClick={() => setViewMode('clinical-data')}
+            className={`flex items-center px-4 py-2 rounded-lg transition-all text-sm font-semibold shadow-sm ${
+              viewMode === 'clinical-data'
+                ? 'bg-brand-700 text-white'
+                : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700'
+            }`}
+          >
             <Database className="w-4 h-4 mr-2" />
             Clinical Data
           </button>
           <div className="relative">
             <button 
-              onClick={() => setShowChartsDropdown(!showChartsDropdown)}
+              onClick={() => {
+                setViewMode('charts');
+                setShowChartsDropdown(!showChartsDropdown);
+              }}
               className={`flex items-center px-4 py-2 rounded-lg transition-all text-sm font-semibold shadow-md ${
-                showChartsDropdown 
+                viewMode === 'charts' && showChartsDropdown 
                   ? 'bg-brand-700 text-white' 
-                  : 'bg-brand-600 hover:bg-brand-700 text-white shadow-brand-200'
+                  : viewMode === 'charts'
+                    ? 'bg-brand-600 hover:bg-brand-700 text-white shadow-brand-200'
+                    : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700'
               }`}
             >
               <BarChart2 className="w-4 h-4 mr-2" />
@@ -123,7 +140,17 @@ export const PatientDashboard = ({ study, onBack }) => {
         </div>
       </div>
 
-      {/* Grid Layout matching reference */}
+      {viewMode === 'clinical-data' ? (
+        <div className="pb-10">
+          {clinicalLoading ? (
+            <div className="p-10 text-center font-bold text-slate-500">Loading clinical data...</div>
+          ) : clinicalError ? (
+            <div className="p-10 text-center font-bold text-red-500">Error loading clinical data: {clinicalError}</div>
+          ) : (
+            <ClinicalDataTable data={clinicalData} />
+          )}
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-10 auto-rows-[220px]">
         
         {/* ROW 1 */}
@@ -221,6 +248,7 @@ export const PatientDashboard = ({ study, onBack }) => {
           </Card>
         )}
       </div>
+      )}
     </div>
   );
 };
