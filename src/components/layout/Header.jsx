@@ -1,7 +1,7 @@
 import React from 'react';
-import { Database } from 'lucide-react';
+import { Database, UploadCloud } from 'lucide-react';
 
-export const Header = ({ currentPage, setCurrentPage }) => (
+export const Header = ({ currentPage, setCurrentPage, onUploadClick }) => (
   <header className="glass-panel sticky top-0 z-50 px-6 py-4 flex items-center justify-between border-b border-gray-200/50">
     <div className="flex items-center space-x-8">
       <div 
@@ -29,6 +29,16 @@ export const Header = ({ currentPage, setCurrentPage }) => (
           Data Sets
         </button>
       </nav>
+    </div>
+    
+    <div className="flex items-center space-x-4">
+      <button 
+        onClick={onUploadClick}
+        className="flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-soft"
+      >
+        <UploadCloud className="w-4 h-4" />
+        <span>Upload</span>
+      </button>
     </div>
   </header>
 );

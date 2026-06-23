@@ -1,223 +1,45 @@
-import React, { useState } from 'react';
-import { Search, Info, BarChart3, BarChart2, ChevronRight, Database, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { ColumnsDropdown } from '../components/ui/ColumnsDropdown.jsx';
 
-const categories = [
-  { id: 'Leukemia', label: 'Leukemia', count: 9 },
-  { id: 'Pancreas', label: 'Pancreas', count: 1 },
-  { id: 'Melanoma', label: 'Melanoma', count: 1 }
-];
+export const StudyExplorer = ({ onStudySelect, refreshTrigger }) => {
+  const [studiesData, setStudiesData] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const studies = {
-  Pancreas: [
-    {
-      id: 'paac_jhu_2014',
-      name: 'Pancreatic Adenocarcinoma (JHU, 2014)',
-      reference: 'Jiao et al. J Pathol 2014',
-      samples: 24,
-      all: 24,
-      mutations: 24,
-      cna: 0,
-      rnaseq: 0,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    }
-  ],
-  Melanoma: [
-    {
-      id: 'mel_tsam_liang_2017',
-      name: 'Acral Melanoma (TGEN, Genome Res 2017)',
-      reference: 'Liang et al. Genome Res 2017',
-      samples: 34,
-      all: 34,
-      mutations: 34,
-      cna: 34,
-      rnaseq: 34,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    }
-  ],
-  Leukemia: [
-    {
-      id: 'alal_target_gdc',
-      name: 'Acute Leukemias of Ambiguous Lineage (TARGET GDC, 2025)',
-      reference: 'Unknown',
-      samples: 191,
-      all: 191,
-      mutations: 191,
-      cna: 0,
-      rnaseq: 191,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'all_stjude_2015',
-      name: 'Acute Lymphoblastic Leukemia (St Jude, Nat Genet 2015)',
-      reference: 'Andersson et al. Nat Genet 2015',
-      samples: 85,
-      all: 85,
-      mutations: 85,
-      cna: 0,
-      rnaseq: 0,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'all_stjude_2016',
-      name: 'Acute Lymphoblastic Leukemia (St Jude, Nat Genet 2016)',
-      reference: 'Zhang et al. Nat Genet 2016',
-      samples: 69,
-      all: 69,
-      mutations: 69,
-      cna: 0,
-      rnaseq: 0,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'aml_ohsu_2018',
-      name: 'Acute Myeloid Leukemia (OHSU, Nature 2018)',
-      reference: 'Tyner et al. Nature 2018',
-      samples: 562,
-      all: 562,
-      mutations: 562,
-      cna: 0,
-      rnaseq: 562,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'aml_ohsu_2022',
-      name: 'Acute Myeloid Leukemia (OHSU, Cancer Cell 2022)',
-      reference: 'Bottomly et al. Cancer Cell 2022',
-      samples: 805,
-      all: 805,
-      mutations: 805,
-      cna: 0,
-      rnaseq: 805,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'aml_target_gdc',
-      name: 'Acute Myeloid Leukemia (TARGET GDC, 2025)',
-      reference: 'Unknown',
-      samples: 2490,
-      all: 2490,
-      mutations: 2490,
-      cna: 2490,
-      rnaseq: 2490,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'aml_tcga_gdc',
-      name: 'Acute Myeloid Leukemia (TCGA GDC, 2025)',
-      reference: 'Unknown',
-      samples: 200,
-      all: 200,
-      mutations: 200,
-      cna: 200,
-      rnaseq: 200,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'laml_tcga',
-      name: 'Acute Myeloid Leukemia (TCGA, Firehose Legacy)',
-      reference: 'Unknown',
-      samples: 201,
-      all: 201,
-      mutations: 201,
-      cna: 201,
-      rnaseq: 201,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    },
-    {
-      id: 'laml_tcga_pub',
-      name: 'Acute Myeloid Leukemia (TCGA, NEJM 2013)',
-      reference: 'TCGA, NEJM 2013',
-      samples: 200,
-      all: 200,
-      mutations: 200,
-      cna: 200,
-      rnaseq: 200,
-      sv: 0,
-      mrna: 0,
-      mirna: 0,
-      meth: 0,
-      rppa: 0,
-      protein: 0,
-      complete: 0,
-      treatment: 0
-    }
-  ]
-};
+  useEffect(() => {
+    const fetchStudies = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:8000/api/studies');
+        const data = await res.json();
+        setStudiesData(data);
+        
+        const cats = Object.keys(data).map(key => ({
+          id: key,
+          label: key,
+          count: data[key].length
+        })).sort((a, b) => b.count - a.count);
+        
+        setCategories(cats);
+        if (cats.length > 0 && !data[selectedCategory]) {
+          setSelectedCategory(cats[0].id);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudies();
+  }, [refreshTrigger]);
 
-export const StudyExplorer = ({ onStudySelect }) => {
+
+
+
+
+
   const [activeTab, setActiveTab] = useState('query');
   const [selectedCategory, setSelectedCategory] = useState('Pancreas');
   const [searchQuery, setSearchQuery] = useState('');
@@ -247,7 +69,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
     setColumns(prev => prev.map(col => ({ ...col, checked: select })));
   };
 
-  const currentStudies = studies[selectedCategory] || studies.Pancreas;
+  const currentStudies = studiesData[selectedCategory] || [];
   const filteredStudies = currentStudies.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -289,7 +111,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
               <p className="text-sm text-slate-500 mt-1">Browse and filter available genomic and clinical datasets.</p>
             </div>
             <Badge variant="primary" className="px-3 py-1 text-xs">
-              {Object.values(studies).flat().length} total studies
+              {Object.values(studiesData).flat().length} total studies
             </Badge>
           </div>
 
