@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { Search, Info, BarChart3, BarChart2, ChevronRight, Database } from 'lucide-react';
-import { categories, studies } from '../data/mockData.js';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 
+const categories = [
+  { id: 'Pancreas', label: 'Pancreas', count: 1 }
+];
+
+const studies = {
+  Pancreas: [
+    {
+      id: 'paac_jhu_2014',
+      name: 'Pancreatic Adenocarcinoma (JHU, 2014)',
+      samples: 24,
+      dataTypes: ['Clinical', 'Mutations']
+    }
+  ]
+};
+
 export const StudyExplorer = ({ onStudySelect }) => {
   const [activeTab, setActiveTab] = useState('query');
-  const [selectedCategory, setSelectedCategory] = useState('PanCancer');
+  const [selectedCategory, setSelectedCategory] = useState('Pancreas');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const currentStudies = studies[selectedCategory] || studies.PanCancer;
+  const currentStudies = studies[selectedCategory] || studies.Pancreas;
   const filteredStudies = currentStudies.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -48,7 +62,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
               <h2 className="text-xl font-bold text-slate-800 tracking-tight">Select Studies for Analysis</h2>
               <p className="text-sm text-slate-500 mt-1">Browse and filter available genomic and clinical datasets.</p>
             </div>
-            <Badge variant="primary" className="px-3 py-1 text-xs">535 total studies</Badge>
+            <Badge variant="primary" className="px-3 py-1 text-xs">1 total study</Badge>
           </div>
 
           <div className="flex gap-6 flex-grow min-h-0">
