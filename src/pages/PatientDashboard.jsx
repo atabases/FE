@@ -3,6 +3,8 @@ import { ArrowLeft, Download, Share2, Settings, Filter, Search, BarChart2, Chevr
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { ChartsDropdown } from '../components/ui/ChartsDropdown.jsx';
+import { VictoryBarChart } from '../components/charts/VictoryBarChart.jsx';
+import { VennDiagramChart } from '../components/charts/VennDiagramChart.jsx';
 
 export const PatientDashboard = ({ study, onBack }) => {
   const [showChartsDropdown, setShowChartsDropdown] = useState(false);
@@ -176,25 +178,10 @@ export const PatientDashboard = ({ study, onBack }) => {
           </div>
         </Card>
 
-        {/* Samples Per Patient (Donut Chart Mock) */}
+        {/* Study Overlap (Venn Diagram) */}
         {isVisible('Samples Per Patient') && (
-          <Card title="Samples Per Patient" className="col-span-12 md:col-span-4 h-80 flex flex-col items-center justify-center relative">
-            <div className="relative w-40 h-40 flex items-center justify-center">
-              {/* SVG Donut Mock */}
-              <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 drop-shadow-sm">
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f1f5f9" strokeWidth="15" />
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3b82f6" strokeWidth="15" strokeDasharray="251.2" strokeDashoffset="25" className="transition-all duration-1000 ease-out" />
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f97316" strokeWidth="15" strokeDasharray="251.2" strokeDashoffset="240" className="transition-all duration-1000 ease-out" />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-slate-800 tracking-tighter">43.1K</span>
-                <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Patients</span>
-              </div>
-            </div>
-            <div className="mt-6 flex gap-4 text-xs font-medium text-slate-600">
-              <span className="flex items-center"><div className="w-3 h-3 rounded-sm bg-brand-500 mr-2 shadow-sm"></div> 1 Sample</span>
-              <span className="flex items-center"><div className="w-3 h-3 rounded-sm bg-orange-500 mr-2 shadow-sm"></div> 2+ Samples</span>
-            </div>
+          <Card title="Study Overlap" className="col-span-12 md:col-span-4 h-80 flex flex-col items-center justify-center relative">
+            <VennDiagramChart />
           </Card>
         )}
 
@@ -236,39 +223,10 @@ export const PatientDashboard = ({ study, onBack }) => {
           </Card>
         )}
 
-        {/* Age at Diagnosis (Bar Chart Mock) */}
+        {/* Age at Diagnosis (Victory Bar Chart) */}
         {isVisible('Age at Diagnosis') && (
           <Card title="Age at Diagnosis" className="col-span-12 md:col-span-6 h-96 flex flex-col">
-            <div className="flex-grow flex items-end space-x-2 px-2 pt-8 relative">
-              {/* Grid lines */}
-              <div className="absolute inset-0 flex flex-col justify-between pt-8 pb-6 px-2 pointer-events-none">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="border-b border-slate-100 w-full h-0"></div>
-                ))}
-              </div>
-              
-              {/* Bars */}
-              {[30, 45, 60, 85, 120, 150, 180, 140, 110, 80, 50, 30].map((h, i) => (
-                <div 
-                  key={i} 
-                  className="w-full bg-brand-500 hover:bg-brand-400 rounded-t-md transition-colors relative group z-10" 
-                  style={{ height: `${h / 2}%` }}
-                >
-                  {/* Tooltip mock */}
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    Count: {h * 100}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between text-xs text-slate-400 mt-3 font-medium px-2">
-              <span>0</span>
-              <span>20</span>
-              <span>40</span>
-              <span>60</span>
-              <span>80</span>
-              <span>100+</span>
-            </div>
+            <VictoryBarChart />
           </Card>
         )}
 
