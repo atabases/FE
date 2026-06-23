@@ -3,7 +3,7 @@ import { ArrowLeft, Download, Share2, Settings, Filter, Search, BarChart2, Chevr
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { ChartsDropdown } from '../components/ui/ChartsDropdown.jsx';
-import { VictoryBarChart } from '../components/charts/VictoryBarChart.jsx';
+import { BarChart } from '../components/charts/BarChart.jsx';
 import { PieChart } from '../components/charts/PieChart.jsx';
 
 export const PatientDashboard = ({ study, onBack }) => {
@@ -223,10 +223,10 @@ export const PatientDashboard = ({ study, onBack }) => {
           </Card>
         )}
 
-        {/* Age at Diagnosis (Victory Bar Chart) */}
+        {/* Age at Diagnosis (Bar Chart) */}
         {isVisible('Age at Diagnosis') && (
-          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-6 h-96 flex flex-col">
-            <VictoryBarChart />
+          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-6 h-52 flex flex-col">
+            <BarChart />
           </Card>
         )}
 

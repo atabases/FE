@@ -12,14 +12,14 @@ export const VictoryBarChart = ({ data = defaultData }) => {
   const [hovered, setHovered] = useState(null);
 
   const maxCount = 20000;
-  const padding = { top: 12, right: 12, bottom: 28, left: 40 };
-  const svgWidth = 320;
-  const svgHeight = 200;
+  const padding = { top: 8, right: 8, bottom: 30, left: 28 };
+  const svgWidth = 280;
+  const svgHeight = 150;
   const chartWidth = svgWidth - padding.left - padding.right;
   const chartHeight = svgHeight - padding.top - padding.bottom;
 
   const barCount = data.length;
-  const barGap = 16;
+  const barGap = 8;
   const barWidth = (chartWidth - barGap * (barCount + 1)) / barCount;
 
   const yTicks = [0, 5000, 10000, 15000, 20000];
@@ -27,8 +27,8 @@ export const VictoryBarChart = ({ data = defaultData }) => {
   const colors = ['#6366f1', '#3b82f6', '#0ea5e9', '#14b8a6', '#8b5cf6'];
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 8 }}>
-      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} width="100%" height="100%" style={{ overflow: 'visible' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px 8px' }}>
+      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} width="100%" height="150" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'visible' }}>
         <defs>
           {colors.map((color, i) => (
             <linearGradient key={i} id={`bar-grad-${i}`} x1="0" y1="0" x2="0" y2="1">
