@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { DownloadCloud, Search } from 'lucide-react';
 
-export const ClinicalDataTable = ({ data }) => {
+export const ClinicalDataTable = ({ data, onRowClick }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredData = useMemo(() => {
@@ -57,7 +57,11 @@ export const ClinicalDataTable = ({ data }) => {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {filteredData.map((row, idx) => (
-              <tr key={idx} className="hover:bg-slate-50 transition-colors">
+              <tr 
+                key={idx} 
+                className="hover:bg-slate-50 transition-colors cursor-pointer"
+                onClick={() => onRowClick && onRowClick(row.patientId)}
+              >
                 <td className="px-4 py-2.5 text-brand-600 font-medium cursor-pointer hover:underline">{row.patientId}</td>
                 <td className="px-4 py-2.5 text-brand-600 cursor-pointer hover:underline">{row.sampleId}</td>
                 <td className="px-4 py-2.5 text-slate-700">{row.mutationCount}</td>

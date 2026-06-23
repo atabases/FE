@@ -32,7 +32,7 @@ function binData(rawData, bins, underLabel, overLabel) {
   return [under, ...result, over];
 }
 
-export const PatientDashboard = ({ study, onBack }) => {
+export const PatientDashboard = ({ study, onBack, onPatientSelect }) => {
   const { data, loading, error } = useDashboardData(study?.id);
   const { data: clinicalData, loading: clinicalLoading, error: clinicalError } = useClinicalData(study?.id);
   
@@ -147,7 +147,7 @@ export const PatientDashboard = ({ study, onBack }) => {
           ) : clinicalError ? (
             <div className="p-10 text-center font-bold text-red-500">Error loading clinical data: {clinicalError}</div>
           ) : (
-            <ClinicalDataTable data={clinicalData} />
+            <ClinicalDataTable data={clinicalData} onRowClick={onPatientSelect} />
           )}
         </div>
       ) : (
