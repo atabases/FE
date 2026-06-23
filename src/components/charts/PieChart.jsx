@@ -26,7 +26,9 @@ export const PieChart = ({ data = [], colorMap = {} }) => {
 
   let currentAngle = 0;
   const slices = sortedData.map((d, i) => {
-    const angle = (d.value / total) * 360;
+    let angle = (d.value / total) * 360;
+    if (angle >= 360) angle = 359.999; // SVG arc bug fix for full circle
+    
     const startAngle = currentAngle;
     const endAngle = currentAngle + angle;
     currentAngle = endAngle;
