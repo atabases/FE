@@ -5,6 +5,7 @@ import { Badge } from '../components/ui/Badge.jsx';
 import { ChartsDropdown } from '../components/ui/ChartsDropdown.jsx';
 import { BarChart } from '../components/charts/BarChart.jsx';
 import { PieChart } from '../components/charts/PieChart.jsx';
+import { SexPieChart } from '../components/charts/SexPieChart.jsx';
 
 export const PatientDashboard = ({ study, onBack }) => {
   const [showChartsDropdown, setShowChartsDropdown] = useState(false);
@@ -140,7 +141,7 @@ export const PatientDashboard = ({ study, onBack }) => {
         
         {/* Cancer Type Breakdown */}
         {isVisible('Cancer Type Distribution') && (
-          <Card title="Cancer Type Distribution" action={<Filter className="w-4 h-4 text-slate-400 cursor-pointer hover:text-brand-600" />} className="col-span-12 md:col-span-4 h-80">
+          <Card title="Cancer Type Distribution" action={<Filter className="w-4 h-4 text-slate-400 cursor-pointer hover:text-brand-600" />} className="col-span-12 md:col-span-5 h-80">
             <div className="flex-grow overflow-y-auto pr-2 space-y-3 scrollbar-hide">
               {[
                 { label: 'Non-Small Cell Lung Cancer', count: 7867, freq: '14.5%', color: 'bg-brand-500' },
@@ -180,14 +181,14 @@ export const PatientDashboard = ({ study, onBack }) => {
 
         {/* Samples Per Patient (Pie Chart) */}
         {isVisible('Samples Per Patient') && (
-          <Card title="Samples Per Patient" className="col-span-12 md:col-span-4 h-80 flex flex-col items-center justify-center relative">
+          <Card title="Samples Per Patient" className="col-span-12 md:col-span-3 h-80 flex flex-col items-center justify-center relative">
             <PieChart />
           </Card>
         )}
 
         {/* Mutated Genes Table */}
         {isVisible('Top Mutated Genes') && (
-          <Card title="Top Mutated Genes" className="col-span-12 md:col-span-6 h-96">
+          <Card title="Top Mutated Genes" className="col-span-12 md:col-span-5 h-56">
             <div className="overflow-auto scrollbar-hide h-full">
               <table className="w-full text-sm text-left">
                 <thead className="text-xs text-slate-500 uppercase bg-slate-50 sticky top-0">
@@ -225,8 +226,15 @@ export const PatientDashboard = ({ study, onBack }) => {
 
         {/* Age at Diagnosis (Bar Chart) */}
         {isVisible('Age at Diagnosis') && (
-          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-4 h-44 flex flex-col">
+          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-4 h-56 flex flex-col">
             <BarChart />
+          </Card>
+        )}
+
+        {/* Sex (Pie Chart) */}
+        {isVisible('Sex') && (
+          <Card title="Sex" className="col-span-12 md:col-span-3 h-56 flex flex-col items-center justify-center relative">
+            <SexPieChart />
           </Card>
         )}
 
