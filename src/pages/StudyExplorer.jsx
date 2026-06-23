@@ -158,16 +158,16 @@ export const StudyExplorer = ({ onStudySelect }) => {
                 </div>
               </div>
 
-              <div className="overflow-y-auto flex-grow bg-white">
-                <table className="w-full text-left text-sm whitespace-nowrap">
+              <div className="overflow-x-auto overflow-y-auto flex-grow bg-white">
+                <table className="w-full text-left text-[13px]">
                   <thead className="bg-slate-100/80 text-slate-700 sticky top-0 border-b border-slate-200 z-10 shadow-sm">
                     <tr>
                       {activeColumns.map((col) => (
-                        <th key={col.id} className="px-4 py-3 font-semibold text-xs uppercase tracking-wide">
+                        <th key={col.id} className="px-2 py-2 font-semibold text-xs uppercase tracking-wide leading-tight">
                           {col.name}
                         </th>
                       ))}
-                      <th className="px-4 py-3"></th>
+                      <th className="px-2 py-2"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -178,21 +178,24 @@ export const StudyExplorer = ({ onStudySelect }) => {
                         onClick={() => onStudySelect(study)}
                       >
                         {activeColumns.map((col) => (
-                          <td key={col.id} className="px-4 py-3">
+                          <td key={col.id} className="px-2 py-2 align-top">
                             {col.id === 'name' ? (
-                              <span className="text-brand-600 font-medium group-hover:underline">{study[col.id]}</span>
+                              <span className="text-brand-600 font-medium group-hover:underline block max-w-[200px] break-words">
+                                {study[col.id]}
+                              </span>
                             ) : col.id === 'reference' ? (
-                              <span className="text-slate-600 flex items-center">
-                                <span className="text-brand-500 mr-1 text-lg leading-none">↓</span> {study[col.id]}
+                              <span className="text-slate-600 flex items-start">
+                                <span className="text-brand-500 mr-1 text-lg leading-none mt-[-2px]">↓</span> 
+                                <span className="max-w-[120px] break-words block">{study[col.id]}</span>
                               </span>
                             ) : (
                               <span className="text-slate-600 tabular-nums">{study[col.id]}</span>
                             )}
                           </td>
                         ))}
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-2 py-2 text-right align-top">
                           <button 
-                            className="p-1.5 bg-brand-50 hover:bg-brand-100 rounded text-brand-700 transition-all shadow-sm border border-brand-100/50"
+                            className="p-1 bg-brand-50 hover:bg-brand-100 rounded text-brand-700 transition-all shadow-sm border border-brand-100/50"
                             title="Analyze Study"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -220,26 +223,6 @@ export const StudyExplorer = ({ onStudySelect }) => {
         </Card>
       </div>
 
-      {/* Right Sidebar - Suggested Queries */}
-      <div className="w-80 flex flex-col gap-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
-        <Card title="Quick Insights" className="shadow-glass border-slate-200/60 bg-gradient-to-b from-white to-slate-50/50">
-          <ul className="text-xs space-y-3">
-            {[
-              "Primary vs. metastatic prostate cancer",
-              "RAS/RAF alterations in colorectal cancer",
-              "TP53 mutations across pediatric cohorts",
-              "Compare survival in BRCA1/2 carriers"
-            ].map((query, i) => (
-              <li key={i} className="flex items-start group cursor-pointer">
-                <ChevronRight className="w-4 h-4 mr-1 text-brand-400 group-hover:text-brand-600 transition-colors shrink-0" />
-                <span className="text-slate-600 group-hover:text-brand-700 group-hover:underline leading-relaxed transition-colors">
-                  {query}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
     </div>
   );
 };
