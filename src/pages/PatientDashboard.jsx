@@ -61,66 +61,66 @@ export const PatientDashboard = ({ study, onBack }) => {
       </div>
 
       {/* Grid Layout matching reference */}
-      <div className="grid grid-cols-12 gap-3 pb-10 auto-rows-[220px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-10 auto-rows-[220px]">
         
         {/* ROW 1 */}
-        <Card title="Data Types" className="col-span-12 md:col-span-3">
+        <Card title="Data Types" className="col-span-1">
           <DashboardTable columns={["Data Types", "#", "Freq"]} data={data.tables.data_types} />
         </Card>
-        <Card title={`Mutated Genes (${data.summary.samples} profiled samples)`} className="col-span-12 md:col-span-4">
+        <Card title={`Mutated Genes (${data.summary.samples} profiled samples)`} className="col-span-1">
           <DashboardTable columns={["Gene", "# Mut", "Freq"]} data={data.tables.mutated_genes} nameKey="gene" countKey="count" freqKey="freq" />
         </Card>
-        <Card title="Mutation Count" className="col-span-12 md:col-span-3">
+        <Card title="Mutation Count" className="col-span-1">
           <BarChart data={mutCountData} />
         </Card>
-        <Card title="Cancer Studies" className="col-span-12 md:col-span-2">
+        <Card title="Cancer Studies" className="col-span-1">
           <PieChart data={data.pie.cancer_studies} />
         </Card>
 
         {/* ROW 2 */}
-        <Card title="Cancer Type" className="col-span-12 md:col-span-3">
+        <Card title="Cancer Type" className="col-span-1">
           <PieChart data={data.pie.cancer_type} />
         </Card>
-        <Card title="Cancer Type Detailed" className="col-span-12 md:col-span-5">
+        <Card title="Cancer Type Detailed" className="col-span-1">
           <PieChart data={data.pie.cancer_type_detailed} />
         </Card>
-        <Card title="Diagnosis" className="col-span-12 md:col-span-4">
+        <Card title="Diagnosis" className="col-span-1">
           <PieChart data={data.pie.diagnosis} />
         </Card>
 
         {/* ROW 3 */}
-        <Card title="Case Lists" className="col-span-12 md:col-span-4">
+        <Card title="Case Lists" className="col-span-1">
           <DashboardTable columns={["Name", "#", "Freq"]} data={data.tables.case_lists} />
         </Card>
-        <Card title="Diagnosis Age" className="col-span-12 md:col-span-3">
+        <Card title="Diagnosis Age" className="col-span-1">
           <BarChart data={ageData} />
         </Card>
-        <Card title="Ethnicity Category" className="col-span-12 md:col-span-2">
+        <Card title="Ethnicity Category" className="col-span-1">
           <PieChart data={data.pie.ethnicity} />
         </Card>
-        <Card title="Immunohistochemistry" className="col-span-12 md:col-span-2">
+        <Card title="Immunohistochemistry" className="col-span-1">
           <PieChart data={data.pie.immunohistochemistry} />
         </Card>
-        <Card title="Number of Samples Per Patient" className="col-span-12 md:col-span-1">
+        <Card title="Number of Samples Per Patient" className="col-span-1">
           <PieChart data={data.pie.number_of_samples_per_patient} />
         </Card>
 
         {/* ROW 4 */}
-        <Card title="Oncotree Code" className="col-span-12 md:col-span-3">
+        <Card title="Oncotree Code" className="col-span-1">
           <PieChart data={data.pie.oncotree_code} />
         </Card>
-        <Card title="Sex" className="col-span-12 md:col-span-3">
+        <Card title="Sex" className="col-span-1">
           <PieChart data={data.pie.sex} />
         </Card>
-        <Card title="Somatic Status" className="col-span-12 md:col-span-3">
+        <Card title="Somatic Status" className="col-span-1">
           <PieChart data={data.pie.somatic_status} />
         </Card>
-        <Card title="Stage" className="col-span-12 md:col-span-3">
+        <Card title="Stage" className="col-span-1">
           <PieChart data={data.pie.stage} />
         </Card>
 
         {/* ROW 5 */}
-        <Card title="TMB (nonsynonymous)" className="col-span-12 md:col-span-4">
+        <Card title="TMB (nonsynonymous)" className="col-span-1">
           <BarChart data={tmbData} />
         </Card>
       </div>
