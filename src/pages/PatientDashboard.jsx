@@ -78,7 +78,7 @@ export const PatientDashboard = ({ study, onBack }) => {
     <div className="flex-grow p-4 max-w-[1900px] mx-auto w-full flex flex-col bg-slate-50 min-h-screen">
       
       {/* Header Section */}
-      <div className="mb-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden flex justify-between items-center">
+      <div className="mb-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative flex justify-between items-center">
         <div>
           <button onClick={onBack} className="text-xs font-semibold text-brand-600 mb-1 hover:text-brand-800 transition-colors">
             ← Back to Study Selection
