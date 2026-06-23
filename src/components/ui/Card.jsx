@@ -9,7 +9,7 @@ export const Card = ({ children, className = '', title, action }) => {
           {action && <div>{action}</div>}
         </div>
       )}
-      <div className="flex-grow p-5 flex flex-col">
+      <div className="flex-grow p-5 flex flex-col min-h-0">
         {children}
       </div>
     </div>

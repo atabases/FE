@@ -31,7 +31,7 @@ function binData(rawData, bins, underLabel, overLabel) {
 }
 
 export const PatientDashboard = ({ study, onBack }) => {
-  const { data, loading, error } = useDashboardData();
+  const { data, loading, error } = useDashboardData(study?.id);
   const [showChartsDropdown, setShowChartsDropdown] = useState(false);
   const [selectedCharts, setSelectedCharts] = useState([
     { id: 'data-types', name: 'Data Types', freq: '100.0%', checked: true },
@@ -84,7 +84,7 @@ export const PatientDashboard = ({ study, onBack }) => {
             ← Back to Study Selection
           </button>
           <div className="flex items-center space-x-3">
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">paac_jhu_2014</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">{study?.name || study?.id || 'Unknown Study'}</h1>
             <Badge variant="success">Verified Dataset</Badge>
           </div>
         </div>
@@ -129,7 +129,7 @@ export const PatientDashboard = ({ study, onBack }) => {
           </Card>
         )}
         {isVisible('mutated-genes') && (
-          <Card title={`Mutated Genes (${data.summary.samples} profiled samples)`} className="col-span-1">
+          <Card title={`Mutated Genes (${data.summary.samples} profiled samples)`} className="col-span-1 row-span-2">
             <DashboardTable columns={["Gene", "# Mut", "Freq"]} data={data.tables.mutated_genes} nameKey="gene" countKey="count" freqKey="freq" />
           </Card>
         )}
