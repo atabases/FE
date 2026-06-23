@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import * as venn from 'venn.js';
+import * as venn from 'venn.js/build/venn.js';
 
 export const VennDiagramChart = () => {
   const chartRef = useRef(null);
