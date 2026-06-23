@@ -225,7 +225,7 @@ export const PatientDashboard = ({ study, onBack }) => {
 
         {/* Age at Diagnosis (Bar Chart) */}
         {isVisible('Age at Diagnosis') && (
-          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-6 h-52 flex flex-col">
+          <Card title="Age at Diagnosis" className="col-span-12 md:col-span-4 h-44 flex flex-col">
             <BarChart />
           </Card>
         )}
