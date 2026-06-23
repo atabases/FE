@@ -30,15 +30,5 @@ export const Header = ({ currentPage, setCurrentPage }) => (
         </button>
       </nav>
     </div>
-    
-    <div className="flex items-center space-x-4">
-      <div className="hidden md:flex items-center space-x-2 text-sm text-slate-500">
-        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-        <span>System Online</span>
-      </div>
-      <button className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-soft">
-        Login
-      </button>
-    </div>
   </header>
 );
