@@ -1,40 +1,60 @@
-import React, { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
-import * as venn from 'venn.js/build/venn.js';
+import React from 'react';
 
+/**
+ * Pure SVG Venn Diagram — no external dependencies.
+ * Renders three overlapping circles with labels and counts.
+ */
 export const VennDiagramChart = () => {
-  const chartRef = useRef(null);
+  const circles = [
+    { cx: 140, cy: 120, r: 80, label: 'Study A', color: '#3b82f6', count: 50 },
+    { cx: 210, cy: 120, r: 70, label: 'Study B', color: '#f97316', count: 40 },
+    { cx: 175, cy: 185, r: 75, label: 'Study C', color: '#10b981', count: 45 },
+  ];
 
-  useEffect(() => {
-    if (!chartRef.current) return;
+  return (
+    <div className="flex justify-center items-center h-full w-full">
+      <svg viewBox="0 0 350 280" width="350" height="260">
+        <defs>
+          {circles.map((c, i) => (
+            <radialGradient key={i} id={`venn-grad-${i}`} cx="40%" cy="40%">
+              <stop offset="0%" stopColor={c.color} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={c.color} stopOpacity="0.08" />
+            </radialGradient>
+          ))}
+        </defs>
 
-    // Define sets and their intersections
-    const sets = [
-      { sets: ['Study A'], size: 50 },
-      { sets: ['Study B'], size: 40 },
-      { sets: ['Study C'], size: 45 },
-      { sets: ['Study A', 'Study B'], size: 15 },
-      { sets: ['Study A', 'Study C'], size: 12 },
-      { sets: ['Study B', 'Study C'], size: 10 },
-      { sets: ['Study A', 'Study B', 'Study C'], size: 5 }
-    ];
+        {/* Circles */}
+        {circles.map((c, i) => (
+          <circle
+            key={i}
+            cx={c.cx}
+            cy={c.cy}
+            r={c.r}
+            fill={`url(#venn-grad-${i})`}
+            stroke={c.color}
+            strokeWidth="2"
+            opacity="0.85"
+          />
+        ))}
 
-    const chart = venn.VennDiagram()
-      .width(350)
-      .height(250);
-    
-    const div = d3.select(chartRef.current);
-    // Clear previous render to prevent duplicates on hot reload
-    div.selectAll('*').remove();
-    div.datum(sets).call(chart);
-    
-    // Add some styling for the Venn diagram
-    div.selectAll("text").style("fill", "#475569").style("font-size", "12px").style("font-weight", "500");
-    
-    return () => {
-      div.selectAll('*').remove();
-    };
-  }, []);
+        {/* Set labels (outside overlap zones) */}
+        <text x="95"  y="90"  textAnchor="middle" fontSize="12" fontWeight="600" fill="#3b82f6">Study A</text>
+        <text x="258" y="90"  textAnchor="middle" fontSize="12" fontWeight="600" fill="#f97316">Study B</text>
+        <text x="175" y="258" textAnchor="middle" fontSize="12" fontWeight="600" fill="#10b981">Study C</text>
 
-  return <div ref={chartRef} className="flex justify-center items-center h-full w-full" />;
+        {/* Individual counts */}
+        <text x="105" y="130" textAnchor="middle" fontSize="11" fill="#475569">50</text>
+        <text x="248" y="130" textAnchor="middle" fontSize="11" fill="#475569">40</text>
+        <text x="175" y="230" textAnchor="middle" fontSize="11" fill="#475569">45</text>
+
+        {/* Pairwise overlaps */}
+        <text x="175" y="105" textAnchor="middle" fontSize="10" fontWeight="500" fill="#6366f1">15</text>
+        <text x="145" y="175" textAnchor="middle" fontSize="10" fontWeight="500" fill="#6366f1">12</text>
+        <text x="205" y="175" textAnchor="middle" fontSize="10" fontWeight="500" fill="#6366f1">10</text>
+
+        {/* Triple overlap */}
+        <text x="175" y="148" textAnchor="middle" fontSize="11" fontWeight="700" fill="#1e1b4b">5</text>
+      </svg>
+    </div>
+  );
 };
