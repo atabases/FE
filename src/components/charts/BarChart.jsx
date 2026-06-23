@@ -18,8 +18,15 @@ const defaultData = [
 
 export const BarChart = ({ data = defaultData }) => {
   const [hovered, setHovered] = useState(null);
-  const maxVal = Math.max(...data.map(d => d.value));
-  const yTicks = [1, 2, 3, 4, 5];
+  const maxVal = Math.max(1, ...data.map(d => d.value)); // Ensure at least 1
+  
+  // Generate 5 dynamic ticks based on maxVal
+  const yTicks = [];
+  for (let i = 1; i <= 5; i++) {
+    yTicks.push(Math.ceil((maxVal / 5) * i));
+  }
+  // Optional: Make ticks unique if maxVal is small (e.g. 2)
+  const uniqueTicks = [...new Set(yTicks)];
 
   return (
     <div style={{ width: '100%', height: '100%', padding: '4px 6px 0', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
@@ -27,7 +34,7 @@ export const BarChart = ({ data = defaultData }) => {
 
         {/* Y-axis labels */}
         <div style={{ display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', paddingBottom: 22, paddingRight: 4, minWidth: 18 }}>
-          {yTicks.map((val) => (
+          {uniqueTicks.map((val) => (
             <span key={val} style={{ fontSize: 9, color: '#333', fontWeight: 500, lineHeight: 1, textAlign: 'right' }}>
               {val}
             </span>
@@ -41,7 +48,7 @@ export const BarChart = ({ data = defaultData }) => {
           <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'flex-end' }}>
 
             {/* Horizontal grid lines */}
-            {yTicks.map((val) => (
+            {uniqueTicks.map((val) => (
               <div
                 key={val}
                 style={{
