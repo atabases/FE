@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Search, Info, BarChart3, BarChart2, ChevronRight, Database } from 'lucide-react';
+import { Search, Info, BarChart3, BarChart2, ChevronRight, Database, ChevronDown } from 'lucide-react';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
+import { ColumnsDropdown } from '../components/ui/ColumnsDropdown.jsx';
 
 const categories = [
   { id: 'Pancreas', label: 'Pancreas', count: 1 }
@@ -22,6 +23,27 @@ export const StudyExplorer = ({ onStudySelect }) => {
   const [activeTab, setActiveTab] = useState('query');
   const [selectedCategory, setSelectedCategory] = useState('Pancreas');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
+  const [columns, setColumns] = useState([
+    { id: 'name', name: 'Name', checked: true },
+    { id: 'reference', name: 'Reference', checked: true },
+    { id: 'all', name: 'All', checked: true },
+    { id: 'mutations', name: 'Mutations', checked: true },
+    { id: 'cna', name: 'CNA', checked: true },
+    { id: 'rnaseq', name: 'RNA-Seq', checked: true },
+    { id: 'sv', name: 'Structural Variants', checked: false },
+    { id: 'mrna', name: 'Tumor mRNA (microarray)', checked: false },
+    { id: 'mirna', name: 'Tumor miRNA', checked: false },
+    { id: 'meth', name: 'Methylation (HM27)', checked: false },
+    { id: 'rppa', name: 'RPPA', checked: false },
+    { id: 'protein', name: 'Protein Mass Spectrometry', checked: false },
+    { id: 'complete', name: 'Complete', checked: false },
+    { id: 'treatment', name: 'Treatment Count', checked: false },
+  ]);
+
+  const toggleColumn = (id) => {
+    setColumns(prev => prev.map(col => col.id === id ? { ...col, checked: !col.checked } : col));
+  };
 
   const currentStudies = studies[selectedCategory] || studies.Pancreas;
   const filteredStudies = currentStudies.filter(s => 
@@ -91,7 +113,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
             </div>
 
             {/* Main Study List */}
-            <div className="flex-grow flex flex-col bg-slate-50 rounded-xl border border-slate-200/60 overflow-hidden shadow-inner">
+            <div className="flex-grow flex flex-col bg-slate-50 rounded-xl border border-slate-200/60 overflow-hidden shadow-inner relative">
               <div className="p-4 border-b border-slate-200/60 bg-white flex items-center justify-between gap-4">
                 <div className="flex-grow max-w-md relative group">
                   <input 
@@ -102,6 +124,23 @@ export const StudyExplorer = ({ onStudySelect }) => {
                     className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition-all" 
                   />
                   <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 group-focus-within:text-brand-500 transition-colors" />
+                </div>
+                
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowColumnsDropdown(!showColumnsDropdown)}
+                    className="flex items-center px-4 py-2 bg-white border border-slate-300 rounded-md text-sm text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+                  >
+                    Columns
+                    <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showColumnsDropdown ? 'rotate-180' : ''}`} />
+                  </button>
+                  {showColumnsDropdown && (
+                    <ColumnsDropdown 
+                      columns={columns} 
+                      onToggle={toggleColumn} 
+                      onClose={() => setShowColumnsDropdown(false)} 
+                    />
+                  )}
                 </div>
               </div>
 
