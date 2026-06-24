@@ -1,18 +1,82 @@
-import React, { useState } from 'react';
-import { Search, Info, BarChart3, BarChart2, ChevronRight, Database } from 'lucide-react';
-import { categories, studies } from '../data/mockData.js';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
+import { ColumnsDropdown } from '../components/ui/ColumnsDropdown.jsx';
+import { Search, ChevronDown, BarChart3 } from 'lucide-react';
 
-export const StudyExplorer = ({ onStudySelect }) => {
+export const StudyExplorer = ({ onStudySelect, refreshTrigger }) => {
+  const [studiesData, setStudiesData] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   const [activeTab, setActiveTab] = useState('query');
-  const [selectedCategory, setSelectedCategory] = useState('PanCancer');
+  const [selectedCategory, setSelectedCategory] = useState('Pancreas');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
 
-  const currentStudies = studies[selectedCategory] || studies.PanCancer;
+  useEffect(() => {
+    const fetchStudies = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:8000/api/studies');
+        const data = await res.json();
+        console.log('Fetched data:', data);
+        
+        if (data && typeof data === 'object' && !Array.isArray(data) && !data.detail) {
+          setStudiesData(data);
+          
+          const cats = Object.keys(data).map(key => ({
+            id: key,
+            label: key,
+            count: Array.isArray(data[key]) ? data[key].length : 0
+          })).sort((a, b) => b.count - a.count);
+          
+          setCategories(cats);
+          if (cats.length > 0 && !data[selectedCategory]) {
+            setSelectedCategory(cats[0].id);
+          }
+        } else {
+          console.error('Invalid data format received:', data);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStudies();
+  }, [refreshTrigger, selectedCategory]);
+  const [columns, setColumns] = useState([
+    { id: 'name', name: 'Name', checked: true },
+    { id: 'reference', name: 'Reference', checked: true },
+    { id: 'all', name: 'All', checked: true },
+    { id: 'mutations', name: 'Mutations', checked: true },
+    { id: 'cna', name: 'CNA', checked: true },
+    { id: 'rnaseq', name: 'RNA-Seq', checked: true },
+    { id: 'sv', name: 'Structural Variants', checked: false },
+    { id: 'mrna', name: 'Tumor mRNA (microarray)', checked: false },
+    { id: 'mirna', name: 'Tumor miRNA', checked: false },
+    { id: 'meth', name: 'Methylation (HM27)', checked: false },
+    { id: 'rppa', name: 'RPPA', checked: false },
+    { id: 'protein', name: 'Protein Mass Spectrometry', checked: false },
+    { id: 'complete', name: 'Complete', checked: false },
+    { id: 'treatment', name: 'Treatment Count', checked: false },
+  ]);
+
+  const toggleColumn = (id) => {
+    setColumns(prev => prev.map(col => col.id === id ? { ...col, checked: !col.checked } : col));
+  };
+
+  const handleSelectAll = (select) => {
+    setColumns(prev => prev.map(col => ({ ...col, checked: select })));
+  };
+
+  const currentStudies = studiesData[selectedCategory] || [];
   const filteredStudies = currentStudies.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const activeColumns = columns.filter(c => c.checked);
 
   return (
     <div className="flex-grow flex p-6 max-w-[1600px] mx-auto w-full gap-6">
@@ -48,7 +112,9 @@ export const StudyExplorer = ({ onStudySelect }) => {
               <h2 className="text-xl font-bold text-slate-800 tracking-tight">Select Studies for Analysis</h2>
               <p className="text-sm text-slate-500 mt-1">Browse and filter available genomic and clinical datasets.</p>
             </div>
-            <Badge variant="primary" className="px-3 py-1 text-xs">535 total studies</Badge>
+            <Badge variant="primary" className="px-3 py-1 text-xs">
+              {Object.values(studiesData).flat().length} total studies
+            </Badge>
           </div>
 
           <div className="flex gap-6 flex-grow min-h-0">
@@ -77,7 +143,7 @@ export const StudyExplorer = ({ onStudySelect }) => {
             </div>
 
             {/* Main Study List */}
-            <div className="flex-grow flex flex-col bg-slate-50 rounded-xl border border-slate-200/60 overflow-hidden shadow-inner">
+            <div className="flex-grow flex flex-col bg-slate-50 rounded-xl border border-slate-200/60 overflow-hidden shadow-inner relative">
               <div className="p-4 border-b border-slate-200/60 bg-white flex items-center justify-between gap-4">
                 <div className="flex-grow max-w-md relative group">
                   <input 
@@ -89,78 +155,91 @@ export const StudyExplorer = ({ onStudySelect }) => {
                   />
                   <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 group-focus-within:text-brand-500 transition-colors" />
                 </div>
+                
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowColumnsDropdown(!showColumnsDropdown)}
+                    className="flex items-center px-4 py-2 bg-white border border-slate-300 rounded-md text-sm text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+                  >
+                    Columns
+                    <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showColumnsDropdown ? 'rotate-180' : ''}`} />
+                  </button>
+                  {showColumnsDropdown && (
+                    <ColumnsDropdown 
+                      columns={columns} 
+                      onToggle={toggleColumn} 
+                      onSelectAll={handleSelectAll}
+                      onClose={() => setShowColumnsDropdown(false)} 
+                    />
+                  )}
+                </div>
               </div>
 
-              <div className="overflow-y-auto flex-grow p-5 space-y-3">
-                {filteredStudies.map((study) => (
-                  <div 
-                    key={study.id} 
-                    className="group bg-white border border-slate-200 rounded-lg p-4 hover:border-brand-300 hover:shadow-md transition-all duration-300 flex items-center cursor-pointer"
-                    onClick={() => onStudySelect(study)}
-                  >
-                    <div className="flex-grow pr-4">
-                      <h3 className="text-sm font-semibold text-slate-800 group-hover:text-brand-700 transition-colors">
-                        {study.name}
-                      </h3>
-                      <div className="flex items-center mt-2 space-x-3">
-                        <span className="text-xs text-slate-500 flex items-center">
-                          <Database className="w-3.5 h-3.5 mr-1 text-brand-500" />
-                          {study.samples.toLocaleString()} samples
-                        </span>
-                        <div className="flex space-x-1">
-                          {study.dataTypes?.map(dt => (
-                            <Badge key={dt} variant="default" className="text-[9px] px-1.5">{dt}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex space-x-2 transition-opacity duration-200">
-                      <button 
-                        className="p-2.5 bg-brand-50 hover:bg-brand-100 rounded-lg text-brand-700 transition-all flex items-center shadow-sm border border-brand-100/50"
-                        title="Analyze Study"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onStudySelect(study);
-                        }}
+              <div className="overflow-x-auto overflow-y-auto flex-grow bg-white">
+                <table className="w-full text-left text-[13px]">
+                  <thead className="bg-slate-100/80 text-slate-700 sticky top-0 border-b border-slate-200 z-10 shadow-sm">
+                    <tr>
+                      {activeColumns.map((col) => (
+                        <th key={col.id} className="px-2 py-2 font-semibold text-xs uppercase tracking-wide leading-tight">
+                          {col.name}
+                        </th>
+                      ))}
+                      <th className="px-2 py-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStudies.map((study) => (
+                      <tr 
+                        key={study.id} 
+                        className="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group"
+                        onClick={() => onStudySelect(study)}
                       >
-                        <BarChart3 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                {filteredStudies.length === 0 && (
-                  <div className="text-center py-12 text-slate-500">
-                    <Search className="w-8 h-8 mx-auto mb-3 text-slate-300" />
-                    <p>No studies found matching "{searchQuery}"</p>
-                  </div>
-                )}
+                        {activeColumns.map((col) => (
+                          <td key={col.id} className="px-2 py-2 align-top">
+                            {col.id === 'name' ? (
+                              <span className="text-brand-600 font-medium group-hover:underline block max-w-[200px] break-words">
+                                {study[col.id]}
+                              </span>
+                            ) : col.id === 'reference' ? (
+                              <span className="text-slate-600 flex items-start">
+                                <span className="text-brand-500 mr-1 text-lg leading-none mt-[-2px]">↓</span> 
+                                <span className="max-w-[120px] break-words block">{study[col.id]}</span>
+                              </span>
+                            ) : (
+                              <span className="text-slate-600 tabular-nums">{study[col.id]}</span>
+                            )}
+                          </td>
+                        ))}
+                        <td className="px-2 py-2 text-right align-top">
+                          <button 
+                            className="p-1 bg-brand-50 hover:bg-brand-100 rounded text-brand-700 transition-all shadow-sm border border-brand-100/50"
+                            title="Analyze Study"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onStudySelect(study);
+                            }}
+                          >
+                            <BarChart3 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {filteredStudies.length === 0 && (
+                      <tr>
+                        <td colSpan={activeColumns.length + 1} className="text-center py-12 text-slate-500">
+                          <Search className="w-8 h-8 mx-auto mb-3 text-slate-300" />
+                          <p>No studies found matching "{searchQuery}"</p>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Right Sidebar - Suggested Queries */}
-      <div className="w-80 flex flex-col gap-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
-        <Card title="Quick Insights" className="shadow-glass border-slate-200/60 bg-gradient-to-b from-white to-slate-50/50">
-          <ul className="text-xs space-y-3">
-            {[
-              "Primary vs. metastatic prostate cancer",
-              "RAS/RAF alterations in colorectal cancer",
-              "TP53 mutations across pediatric cohorts",
-              "Compare survival in BRCA1/2 carriers"
-            ].map((query, i) => (
-              <li key={i} className="flex items-start group cursor-pointer">
-                <ChevronRight className="w-4 h-4 mr-1 text-brand-400 group-hover:text-brand-600 transition-colors shrink-0" />
-                <span className="text-slate-600 group-hover:text-brand-700 group-hover:underline leading-relaxed transition-colors">
-                  {query}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
     </div>
   );
 };
