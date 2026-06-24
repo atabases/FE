@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card.jsx';
 import { Badge } from '../components/ui/Badge.jsx';
 import { ColumnsDropdown } from '../components/ui/ColumnsDropdown.jsx';
+import { Search, ChevronDown, BarChart3 } from 'lucide-react';
 
 export const StudyExplorer = ({ onStudySelect, refreshTrigger }) => {
   const [studiesData, setStudiesData] = useState({});
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const [activeTab, setActiveTab] = useState('query');
+  const [selectedCategory, setSelectedCategory] = useState('Pancreas');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
 
   useEffect(() => {
     const fetchStudies = async () => {
@@ -14,17 +20,23 @@ export const StudyExplorer = ({ onStudySelect, refreshTrigger }) => {
       try {
         const res = await fetch('http://localhost:8000/api/studies');
         const data = await res.json();
-        setStudiesData(data);
+        console.log('Fetched data:', data);
         
-        const cats = Object.keys(data).map(key => ({
-          id: key,
-          label: key,
-          count: data[key].length
-        })).sort((a, b) => b.count - a.count);
-        
-        setCategories(cats);
-        if (cats.length > 0 && !data[selectedCategory]) {
-          setSelectedCategory(cats[0].id);
+        if (data && typeof data === 'object' && !Array.isArray(data) && !data.detail) {
+          setStudiesData(data);
+          
+          const cats = Object.keys(data).map(key => ({
+            id: key,
+            label: key,
+            count: Array.isArray(data[key]) ? data[key].length : 0
+          })).sort((a, b) => b.count - a.count);
+          
+          setCategories(cats);
+          if (cats.length > 0 && !data[selectedCategory]) {
+            setSelectedCategory(cats[0].id);
+          }
+        } else {
+          console.error('Invalid data format received:', data);
         }
       } catch (e) {
         console.error(e);
@@ -33,17 +45,7 @@ export const StudyExplorer = ({ onStudySelect, refreshTrigger }) => {
       }
     };
     fetchStudies();
-  }, [refreshTrigger]);
-
-
-
-
-
-
-  const [activeTab, setActiveTab] = useState('query');
-  const [selectedCategory, setSelectedCategory] = useState('Pancreas');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
+  }, [refreshTrigger, selectedCategory]);
   const [columns, setColumns] = useState([
     { id: 'name', name: 'Name', checked: true },
     { id: 'reference', name: 'Reference', checked: true },
