@@ -17,6 +17,10 @@ const PATHWAYS_DATA = [
 export const PatientPathways = () => {
   const [selectedPathway, setSelectedPathway] = useState('WNT');
   const [showTcgaOnly, setShowTcgaOnly] = useState(true);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.25, 4));
+  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.25, 0.25));
 
   return (
     <div className="flex flex-col h-full mt-4">
@@ -42,19 +46,28 @@ export const PatientPathways = () => {
             <img 
               src="/new-pathway.svg" 
               alt="WNT Pathway" 
-              className="max-w-none max-h-none"
+              className="max-w-none max-h-none transition-transform duration-200 origin-center"
+              style={{ transform: `scale(${zoomLevel})` }}
             />
           ) : (
             <div className="text-slate-400 font-medium">Pathway diagram not available for {selectedPathway}</div>
           )}
           
           {/* Zoom Controls Overlay */}
-          <div className="absolute top-4 right-4 flex flex-col gap-1">
-            <button className="w-8 h-8 bg-white border border-slate-300 rounded shadow-sm flex items-center justify-center hover:bg-slate-50">
-              <span className="text-lg leading-none">+</span>
+          <div className="absolute top-4 right-4 flex flex-col gap-1 z-10">
+            <button 
+              onClick={handleZoomIn}
+              title="Zoom In"
+              className="w-8 h-8 bg-white border border-slate-300 rounded shadow-sm flex items-center justify-center hover:bg-slate-50 text-slate-700 hover:text-brand-600 transition-colors"
+            >
+              <span className="text-xl font-medium leading-none">+</span>
             </button>
-            <button className="w-8 h-8 bg-white border border-slate-300 rounded shadow-sm flex items-center justify-center hover:bg-slate-50">
-              <span className="text-lg leading-none">-</span>
+            <button 
+              onClick={handleZoomOut}
+              title="Zoom Out"
+              className="w-8 h-8 bg-white border border-slate-300 rounded shadow-sm flex items-center justify-center hover:bg-slate-50 text-slate-700 hover:text-brand-600 transition-colors"
+            >
+              <span className="text-xl font-medium leading-none mb-0.5">-</span>
             </button>
           </div>
         </div>
