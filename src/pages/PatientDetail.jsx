@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePatientData } from '../hooks/usePatientData.js';
 import { PatientMutationsTable } from '../components/charts/PatientMutationsTable.jsx';
+import { PatientPathways } from '../components/PatientPathways.jsx';
 import { User, DownloadCloud, Search } from 'lucide-react';
 
 export const PatientDetail = ({ patientId, onBack }) => {
@@ -89,9 +90,7 @@ export const PatientDetail = ({ patientId, onBack }) => {
           <PatientMutationsTable mutations={data.mutations} />
         )}
         {activeTab === 'pathways' && (
-          <div className="p-8 text-center text-slate-500 border border-dashed border-slate-300 rounded-lg">
-            Pathways view not implemented.
-          </div>
+          <PatientPathways />
         )}
         {activeTab === 'clinical' && (
           <div className="bg-white">
